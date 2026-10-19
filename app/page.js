@@ -301,9 +301,9 @@ export default function Home() {
             kesan yang ditinggalkannya, serta cerita-cerita yang ingin kamu simpan.
           </p>
 
-          <a className="primary-link" href="#movie-form">
-            Simpan Kenangannya <span aria-hidden="true">↗</span>
-          </a>
+<a className="primary-link" href="#movie-form">
+  Simpan Kenangannya
+</a>
 
           <p className="hero-note">
             FILM-MU. PERASAANMU. KENANGANMU.
@@ -324,7 +324,7 @@ export default function Home() {
             <small>SETIAP FILM MENINGGALKAN KESAN</small>
           </div>
 
-          <span className="floating-star">✳</span>
+          <span className="floating-star"></span>
           <span className="art-caption">Kumpulan momen yang berarti.</span>
         </div>
       </section>
@@ -508,7 +508,7 @@ export default function Home() {
                 ? "Menyimpan..."
                 : editingId
                   ? "Simpan Perubahan ↗"
-                  : "Tambahkan ke Cinémemo ↗"}
+                  : "Tambahkan ke Cinémemo "}
             </button>
 
             {editingId && (
@@ -592,7 +592,7 @@ export default function Home() {
           </div>
         ) : filteredMovies.length === 0 ? (
           <div className="empty-state">
-            <span className="empty-icon" aria-hidden="true">✳</span>
+            <span className="empty-icon" aria-hidden="true"></span>
             <h3>{movies.length ? "Film tidak ditemukan" : "Halaman kosong, untuk saat ini."}</h3>
             <p>
               {movies.length
