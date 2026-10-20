@@ -21,6 +21,27 @@ const GENRES = [
 
 const STATUSES = ["All", "Watched", "Watching", "Watchlist"];
 
+const STATUS_LABELS = {
+  All: "Semua",
+  Watched: "Sudah ditonton",
+  Watching: "Sedang ditonton",
+  Watchlist: "Daftar tontonan"
+};
+
+function Bolt() {
+  return (
+    <svg
+      className="bolt-icon"
+      viewBox="0 0 24 24"
+      width="18"
+      height="18"
+      aria-hidden="true"
+    >
+      <path d="M13.5 2 4 13.5h6.2L9 22l10-12.5h-6.4L13.5 2Z" fill="currentColor" />
+    </svg>
+  );
+}
+
 function Stars({ rating }) {
   return (
     <span className="stars" aria-label={`Rating ${rating} dari 5`}>
@@ -229,7 +250,7 @@ export default function Home() {
       setNotice(
         wasEditing
           ? "Perubahan film berhasil disimpan."
-          : "Film berhasil ditambahkan ke Cinémemo."
+          : "Film berhasil ditambahkan ke Moviezam."
       );
 
       await loadMovies();
@@ -241,7 +262,7 @@ export default function Home() {
   }
 
   async function deleteMovie(movie) {
-    if (!window.confirm(`Hapus "${movie.title}" dari Cinémemo?`)) {
+    if (!window.confirm(`Hapus "${movie.title}" dari Moviezam?`)) {
       return;
     }
 
@@ -273,13 +294,15 @@ export default function Home() {
   return (
     <main id="top">
       <header className="topbar">
-        <a className="brand" href="#top" aria-label="Beranda Cinémemo">
-          <span className="brand-mark">C</span>
-          <span>inémemo<span className="brand-dot">.</span></span>
+        <a className="brand" href="#top" aria-label="Beranda Moviezam">
+          <span className="brand-mark"><Bolt /></span>
+          <span className="brand-name">
+            <span className="brand-light">movie</span>zam
+          </span>
         </a>
 
         <nav className="top-navigation">
-          <a className="top-link" href="#movie-form">+ Tambah Film</a>
+          <a className="top-link" href="#movie-form">Tambah film</a>
         </nav>
       </header>
 
@@ -287,76 +310,70 @@ export default function Home() {
         <div className="hero-content">
           <p className="eyebrow">
             <span className="live-dot" />
-            Jurnal Film Pribadi
+            Jurnal film pribadi
           </p>
 
           <h1>
-            Beberapa cerita
+            Setiap film punya
             <br />
-            <em>selalu membekas.</em>
+            momen yang layak
+            <br />
+            disimpan.
           </h1>
 
           <p className="hero-copy">
-            Sebuah ruang kecil untuk film-film yang telah kamu tonton,
-            kesan yang ditinggalkannya, serta cerita-cerita yang ingin kamu simpan.
+            Catat film yang sudah kamu tonton, beri rating, dan tulis kesan
+            yang tertinggal setelah kreditnya habis.
           </p>
 
-<a className="primary-link" href="#movie-form">
-  Simpan Kenangannya
-</a>
-
-          <p className="hero-note">
-            FILM-MU. PERASAANMU. KENANGANMU.
-          </p>
+          <a className="primary-link" href="#movie-form">
+            Catat film pertama
+          </a>
         </div>
 
         <div className="hero-art" aria-hidden="true">
-          <div className="hero-art-label">JEJAK DALAM SETIAP ADEGAN</div>
+          <span className="floating-star" />
 
           <div className="film-ticket">
-            <span>ARSIP PRIBADI · NO. 001</span>
+            <span>Tiket masuk jurnal</span>
             <strong>
-              CINÉ
+              movie
               <br />
-              <i>MEMO</i>
+              <i>zam!</i>
             </strong>
             <div className="ticket-divider" />
-            <small>SETIAP FILM MENINGGALKAN KESAN</small>
+            <small>Tonton, catat, simpan.</small>
           </div>
-
-          <span className="floating-star"></span>
-          <span className="art-caption">Kumpulan momen yang berarti.</span>
         </div>
       </section>
 
       <section className="stats" aria-label="Statistik jurnal film">
         <div>
           <span className="stat-number">{stats.total}</span>
-          <span className="stat-label">Total Koleksi Film</span>
+          <span className="stat-label">film tersimpan</span>
         </div>
         <div>
           <span className="stat-number">{stats.watched}</span>
-          <span className="stat-label">Sudah Ditonton</span>
+          <span className="stat-label">sudah ditonton</span>
         </div>
         <div>
           <span className="stat-number">{stats.watchlist}</span>
-          <span className="stat-label">Antrean Tontonan</span>
+          <span className="stat-label">antre ditonton</span>
         </div>
       </section>
 
       <section className="form-section" id="movie-form">
         <div className="section-heading">
           <div>
-            <p className="eyebrow">Simpan Kenangan Baru</p>
-            <h2>{editingId ? "Edit Catatan Film" : "Tambah Film"}</h2>
+            <h2>{editingId ? "Edit catatan film" : "Tambah film baru"}</h2>
+            <p>Judul dan genre wajib diisi, sisanya boleh menyusul.</p>
           </div>
-          <span className="section-index">01 / Jurnal Kamu</span>
         </div>
 
         <form className="movie-form" onSubmit={submitMovie}>
           <div className="field field-wide">
             <label className="field-label" htmlFor="movie-title">
-              Judul Film <span>*</span>
+              Judul film <span>*</span>
             </label>
 
             <div className="poster-search-row">
@@ -365,7 +382,7 @@ export default function Home() {
                 name="title"
                 value={form.title}
                 onChange={updateField}
-                placeholder="Masukkan judul film."
+                placeholder="Contoh: Parasite"
                 maxLength={255}
                 required
               />
@@ -376,12 +393,12 @@ export default function Home() {
                 onClick={searchPoster}
                 disabled={searchingPoster}
               >
-                {searchingPoster ? "Sedang mencari..." : "Cari Poster"}
+                {searchingPoster ? "Mencari..." : "Cari poster"}
               </button>
             </div>
 
             <p className="field-hint">
-              Cari film untuk menemukan posternya.
+              Ketik judulnya, lalu cari poster dan tahun rilisnya otomatis.
             </p>
 
             {posterError && (
@@ -400,7 +417,7 @@ export default function Home() {
                     {movie.poster_url ? (
                       <img src={movie.poster_url} alt="" />
                     ) : (
-                      <span className="poster-result-empty">Tanpa Poster</span>
+                      <span className="poster-result-empty">Tanpa poster</span>
                     )}
 
                     <span>
@@ -421,9 +438,9 @@ export default function Home() {
               <div className="poster-preview">
                 <img src={form.poster_url} alt="Poster film yang dipilih" />
                 <div>
-                  <p className="poster-preview-label">POSTER TERPILIH</p>
+                  <p className="poster-preview-label">Poster terpilih</p>
                   <p className="poster-preview-copy">
-                    Poster ini akan ditampilkan di koleksi film kamu.
+                    Poster ini akan tampil di koleksi filmmu.
                   </p>
                   <button
                     type="button"
@@ -435,7 +452,7 @@ export default function Home() {
                       }))
                     }
                   >
-                    Hapus Poster
+                    Hapus poster
                   </button>
                 </div>
               </div>
@@ -443,7 +460,7 @@ export default function Home() {
           </div>
 
           <label className="field">
-            Tahun Rilis
+            Tahun rilis
             <input
               name="release_year"
               type="text"
@@ -464,7 +481,7 @@ export default function Home() {
               onChange={updateField}
               required
             >
-              <option value="">Pilih Genre</option>
+              <option value="">Pilih genre</option>
               {GENRES.map((genre) => (
                 <option key={genre} value={genre}>{genre}</option>
               ))}
@@ -472,7 +489,7 @@ export default function Home() {
           </label>
 
           <label className="field">
-            Rating Kamu
+            Rating kamu
             <select name="rating" value={form.rating} onChange={updateField}>
               {Array.from({ length: 11 }, (_, index) => (
                 <option key={index} value={(index / 2).toFixed(1)}>
@@ -483,16 +500,16 @@ export default function Home() {
           </label>
 
           <label className="field">
-            Status Tontonan
+            Status tontonan
             <select name="status" value={form.status} onChange={updateField}>
-              <option value="Watched">Sudah Ditonton</option>
-              <option value="Watching">Sedang Ditonton</option>
-              <option value="Watchlist">Daftar Tontonan</option>
+              <option value="Watched">Sudah ditonton</option>
+              <option value="Watching">Sedang ditonton</option>
+              <option value="Watchlist">Daftar tontonan</option>
             </select>
           </label>
 
           <label className="field field-wide">
-            Ulasan Pribadi
+            Ulasan pribadi
             <textarea
               name="review"
               value={form.review}
@@ -507,8 +524,8 @@ export default function Home() {
               {saving
                 ? "Menyimpan..."
                 : editingId
-                  ? "Simpan Perubahan ↗"
-                  : "Tambahkan ke Cinémemo "}
+                  ? "Simpan perubahan"
+                  : "Tambahkan ke Moviezam"}
             </button>
 
             {editingId && (
@@ -517,7 +534,7 @@ export default function Home() {
                 type="button"
                 onClick={resetForm}
               >
-                Batal Mengedit
+                Batal mengedit
               </button>
             )}
           </div>
@@ -527,55 +544,44 @@ export default function Home() {
       <section className="collection-section" id="collection">
         <div className="section-heading">
           <div>
-            <p className="eyebrow">ARSIP FILM PRIBADI</p>
-            <h2>
-              Film &amp; <em>kenangan</em><span className="heading-dot">.</span>
-            </h2>
+            <h2>Koleksi filmmu</h2>
           </div>
 
           <span className="section-index">
-            {filteredMovies.length} FILM
+            {filteredMovies.length} film
           </span>
         </div>
 
         <div className="collection-tools">
           <label className="search-box">
-            <span>Cari Film</span>
+            <span>Cari film</span>
             <input
               value={search}
               onChange={(event) => setSearch(event.target.value)}
-              placeholder="Cari film dalam jurnalmu..."
+              placeholder="Judul, genre, atau tahun"
               aria-label="Cari film"
             />
           </label>
 
           <div className="filter-tabs" aria-label="Filter berdasarkan status">
-            {STATUSES.map((status) => {
-              const statusLabels = {
-                All: "Semua",
-                Watched: "Sudah Ditonton",
-                Watching: "Sedang Ditonton",
-                Watchlist: "Daftar Tontonan"
-              };
-
-              return (
-                <button
-                  key={status}
-                  className={filter === status ? "filter-tab active" : "filter-tab"}
-                  onClick={() => setFilter(status)}
-                  type="button"
-                >
-                  {statusLabels[status]}
-                </button>
-              );
-            })}
+            {STATUSES.map((status) => (
+              <button
+                key={status}
+                className={filter === status ? "filter-tab active" : "filter-tab"}
+                onClick={() => setFilter(status)}
+                aria-pressed={filter === status}
+                type="button"
+              >
+                {STATUS_LABELS[status]}
+              </button>
+            ))}
           </div>
         </div>
 
         {error && (
           <div className="message message-error" role="alert">
             {error}
-            <button type="button" onClick={loadMovies}>Coba Lagi</button>
+            <button type="button" onClick={loadMovies}>Coba lagi</button>
           </div>
         )}
 
@@ -592,16 +598,16 @@ export default function Home() {
           </div>
         ) : filteredMovies.length === 0 ? (
           <div className="empty-state">
-            <span className="empty-icon" aria-hidden="true"></span>
-            <h3>{movies.length ? "Film tidak ditemukan" : "Halaman kosong, untuk saat ini."}</h3>
+            <span className="empty-icon" aria-hidden="true">⚡</span>
+            <h3>{movies.length ? "Film tidak ditemukan" : "Belum ada film di sini"}</h3>
             <p>
               {movies.length
                 ? "Coba kata kunci atau filter status lainnya."
-                : "Film pertamamu siap untuk dikenang. Tambahkan satu film untuk memulai."}
+                : "Tambahkan film pertamamu untuk mulai membangun koleksi."}
             </p>
             {!movies.length && (
               <a className="primary-link" href="#movie-form">
-                Tambahkan Film Pertama ↗
+                Tambah film pertama
               </a>
             )}
           </div>
@@ -627,19 +633,15 @@ export default function Home() {
                     className="poster-placeholder"
                     style={{ display: movie.poster_url ? "none" : "flex" }}
                   >
-                    <span>✳</span>
+                    <span aria-hidden="true">⚡</span>
                     <b>{movie.title}</b>
-                    <small>{movie.release_year || "FILM DALAM JURNALMU"}</small>
+                    <small>{movie.release_year || "Belum ada poster"}</small>
                   </div>
 
                   <span
                     className={`status-chip ${(movie.status || "Watched").toLowerCase()}`}
                   >
-                    {{
-                      Watched: "Sudah Ditonton",
-                      Watching: "Sedang Ditonton",
-                      Watchlist: "Daftar Tontonan"
-                    }[movie.status] || "Sudah Ditonton"}
+                    {STATUS_LABELS[movie.status] || STATUS_LABELS.Watched}
                   </span>
                 </div>
 
@@ -650,8 +652,8 @@ export default function Home() {
                   </div>
 
                   <p className="movie-meta">
-                    {movie.release_year || "Tahun tidak diketahui"}
-                    {movie.genre ? ` · ${movie.genre}` : ""}
+                    <span>{movie.release_year || "Tahun tidak diketahui"}</span>
+                    {movie.genre && <span className="genre-pill">{movie.genre}</span>}
                   </p>
 
                   {movie.review && (
@@ -660,7 +662,7 @@ export default function Home() {
 
                   <div className="card-actions">
                     <button type="button" onClick={() => startEdit(movie)}>
-                      Edit Catatan
+                      Edit catatan
                     </button>
                     <button
                       type="button"
@@ -678,13 +680,15 @@ export default function Home() {
       </section>
 
       <footer>
-        <a className="brand footer-brand" href="#top">
-          <span className="brand-mark">C</span>
-          <span>cinémemo<span className="brand-dot">.</span></span>
+        <a className="brand footer-brand" href="#top" aria-label="Kembali ke atas">
+          <span className="brand-mark"><Bolt /></span>
+          <span className="brand-name">
+            <span className="brand-light">movie</span>zam
+          </span>
         </a>
 
-        <p>DIBUAT UNTUK PECINTA FILM · CERITAMU, TERSIMPAN DI SINI</p>
-        <a href="#top">KEMBALI KE ATAS ↑</a>
+        <p>Dibuat untuk pecinta film. Ceritamu tersimpan di sini.</p>
+        <a href="#top">Kembali ke atas</a>
       </footer>
     </main>
   );
