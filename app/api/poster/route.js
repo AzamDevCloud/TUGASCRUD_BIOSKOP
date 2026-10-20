@@ -1,13 +1,15 @@
+
 import { NextResponse } from "next/server";
 
 export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
 
 export async function GET(request) {
-    const token = process.env.TMDB_READ_ACCESS_TOKEN;
+    const apiKey = process.env.OMDB_API_KEY;
 
-    if (!token) {
+    if (!apiKey) {
         return NextResponse.json(
-            { error: "TMDB_READ_ACCESS_TOKEN belum diatur di .env.local." },
+            { error: "OMDB_API_KEY belum diatur di file .env." },
             { status: 500 }
         );
     }
@@ -23,49 +25,55 @@ export async function GET(request) {
     }
 
     try {
-        const url = new URL("https://api.themoviedb.org/3/search/movie");
-        url.searchParams.set("query", title);
-        url.searchParams.set("include_adult", "false");
-        url.searchParams.set("language", "en-US");
+        const url = new URL("https://www.omdbapi.com/");
+        url.searchParams.set("apikey", apiKey);
+        url.searchParams.set("s", title);
+        url.searchParams.set("type", "movie");
 
         const response = await fetch(url, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-                accept: "application/json"
-            },
             cache: "no-store"
         });
 
         if (!response.ok) {
-            console.error("TMDB search failed:", response.status);
+            console.error("OMDb HTTP error:", response.status);
 
             return NextResponse.json(
-                { error: "Gagal mencari poster film dari TMDB." },
+                { error: "Gagal menghubungi OMDb API." },
                 { status: 502 }
             );
         }
 
         const data = await response.json();
 
-        const results = (data.results || [])
-            .slice(0, 8)
-            .map((movie) => ({
-                id: movie.id,
-                title: movie.title,
-                release_year: movie.release_date
-                    ? Number(movie.release_date.slice(0, 4)) || null
-                    : null,
-                poster_url: movie.poster_path
-                    ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
+        if (data.Response === "False") {
+            const status = data.Error === "Invalid API key!" ? 502 : 200;
+
+            return NextResponse.json(
+                status === 200
+                    ? []
+                    : { error: "API Key OMDb tidak valid atau belum aktif." },
+                { status }
+            );
+        }
+
+        const results = (data.Search || []).map((movie) => ({
+            id: movie.imdbID,
+            title: movie.Title,
+            release_year: movie.Year
+                ? Number(movie.Year.match(/\d{4}/)?.[0]) || null
+                : null,
+            poster_url:
+                movie.Poster && movie.Poster !== "N/A"
+                    ? movie.Poster
                     : null
-            }));
+        }));
 
         return NextResponse.json(results);
     } catch (error) {
         console.error("GET /api/poster failed:", error);
 
         return NextResponse.json(
-            { error: "Tidak bisa terhubung ke layanan pencarian poster." },
+            { error: "Tidak bisa terhubung ke layanan OMDb." },
             { status: 500 }
         );
     }
